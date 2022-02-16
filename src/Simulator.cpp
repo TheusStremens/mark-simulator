@@ -12,9 +12,7 @@ createTrafficObjects(std::vector<std::shared_ptr<Street>> &streets,
                      std::vector<std::shared_ptr<Vehicle>> &vehicles)
 {
   for (size_t i = 0; i < 9; i++)
-  {
     intersections.push_back(std::make_shared<Intersection>());
-  }
 
   // Position intersections in pixel coordinates.
   // Middle part from bottom to up.
@@ -30,14 +28,66 @@ createTrafficObjects(std::vector<std::shared_ptr<Street>> &streets,
   intersections.at(7)->setPosition(771, 502);
   intersections.at(8)->setPosition(771, 242);
 
-  // Create streets and connect with the intersections.
-  int nStreets = 8;
-  for (size_t ns = 0; ns < nStreets; ns++)
-  {
-    streets.push_back(std::make_shared<Street>());
-    streets.at(ns)->setInIntersection(intersections.at(ns));
-    streets.at(ns)->setOutIntersection(intersections.at(ns+1));
-  }
+  // Central vertical streets from bottom to up.
+  streets.push_back(std::make_shared<Street>());
+  streets.at(0)->setInIntersection(intersections.at(0));
+  streets.at(0)->setOutIntersection(intersections.at(2));
+  streets.push_back(std::make_shared<Street>());
+  streets.at(1)->setInIntersection(intersections.at(0));
+  streets.at(1)->setOutIntersection(intersections.at(1));
+  streets.push_back(std::make_shared<Street>());
+  streets.at(2)->setInIntersection(intersections.at(1));
+  streets.at(2)->setOutIntersection(intersections.at(2));
+  // Left vertical streets from bottom to up.
+  streets.push_back(std::make_shared<Street>());
+  streets.at(3)->setInIntersection(intersections.at(3));
+  streets.at(3)->setOutIntersection(intersections.at(5));
+  streets.push_back(std::make_shared<Street>());
+  streets.at(4)->setInIntersection(intersections.at(3));
+  streets.at(4)->setOutIntersection(intersections.at(4));
+  streets.push_back(std::make_shared<Street>());
+  streets.at(5)->setInIntersection(intersections.at(4));
+  streets.at(5)->setOutIntersection(intersections.at(5));
+  // Right vertical streets from bottom to up.
+  streets.push_back(std::make_shared<Street>());
+  streets.at(6)->setInIntersection(intersections.at(6));
+  streets.at(6)->setOutIntersection(intersections.at(8));
+  streets.push_back(std::make_shared<Street>());
+  streets.at(7)->setInIntersection(intersections.at(6));
+  streets.at(7)->setOutIntersection(intersections.at(7));
+  streets.push_back(std::make_shared<Street>());
+  streets.at(8)->setInIntersection(intersections.at(7));
+  streets.at(8)->setOutIntersection(intersections.at(8));
+  // Central horizontal streets from left to right.
+  streets.push_back(std::make_shared<Street>());
+  streets.at(9)->setInIntersection(intersections.at(4));
+  streets.at(9)->setOutIntersection(intersections.at(7));
+  streets.push_back(std::make_shared<Street>());
+  streets.at(10)->setInIntersection(intersections.at(4));
+  streets.at(10)->setOutIntersection(intersections.at(1));
+  streets.push_back(std::make_shared<Street>());
+  streets.at(11)->setInIntersection(intersections.at(1));
+  streets.at(11)->setOutIntersection(intersections.at(7));
+  // Bottom horizontal streets from left to right.
+  streets.push_back(std::make_shared<Street>());
+  streets.at(12)->setInIntersection(intersections.at(3));
+  streets.at(12)->setOutIntersection(intersections.at(6));
+  streets.push_back(std::make_shared<Street>());
+  streets.at(13)->setInIntersection(intersections.at(3));
+  streets.at(13)->setOutIntersection(intersections.at(0));
+  streets.push_back(std::make_shared<Street>());
+  streets.at(14)->setInIntersection(intersections.at(0));
+  streets.at(14)->setOutIntersection(intersections.at(6));
+  // Top horizontal streets from left to right.
+  streets.push_back(std::make_shared<Street>());
+  streets.at(15)->setInIntersection(intersections.at(5));
+  streets.at(15)->setOutIntersection(intersections.at(8));
+  streets.push_back(std::make_shared<Street>());
+  streets.at(16)->setInIntersection(intersections.at(5));
+  streets.at(16)->setOutIntersection(intersections.at(2));
+  streets.push_back(std::make_shared<Street>());
+  streets.at(17)->setInIntersection(intersections.at(2));
+  streets.at(17)->setOutIntersection(intersections.at(8));
 
   // Add vehicles to streets.
   for (size_t nv = 0; nv < 1; nv++)

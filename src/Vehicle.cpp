@@ -67,6 +67,23 @@ void Vehicle::drive()
       i2->getPosition(x2, y2);
       dx = x2 - x1;
       dy = y2 - y1;
+      // Check if the distance is bigger than 300 pixels because this configure a jump
+      // of more than one intersection. In this case we need to do a little trick to
+      // make the vehicle moves beyond the image limits.
+      if (std::fabs(dx) > 300)
+      {
+        if (x1 < x2)
+          dx = -(x1 + (1000 - x2));
+        else
+          dx = x2 + (1000 - x1);
+      }
+      if (std::fabs(dy) > 300)
+      {
+        if (y1 < y2)
+          dy = -(y1 + (1000 - y2));
+        else
+          dy = y2 + (1000 - y1);
+      }
       l = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (x1 - x2));
       xv = x1 + completion * dx; // new position based on line equation in parameter form
       yv = y1 + completion * dy;

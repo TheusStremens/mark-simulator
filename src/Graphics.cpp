@@ -22,12 +22,10 @@ void Graphics::loadBackgroundImage()
 
 void Graphics::simulate()
 {
-  char c = ' ';
-  while (c != 27) // ESC
+  while (true) // ESC
   {
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
     drawTrafficObjects();
-    c = cv::waitKey(1);
   }
 }
 
@@ -53,6 +51,16 @@ void Graphics::drawTrafficObjects()
       int g = rng.uniform(0, 255);
       int r = sqrt(255 * 255 - g * g - b * b); // ensure that length of color vector is always 255
       cv::Scalar vehicleColor = cv::Scalar(b, g, r);
+      // Check if the position is outside the image limits. In this case, just put the
+      // object in the "other side".
+      if (posx < 0)
+        posx = _images.at(0).cols + posx;
+      if (posy < 0)
+        posy = _images.at(0).rows + posy;
+      if (posx > _images.at(0).cols)
+        posx = posx - _images.at(0).cols;
+      if (posy > _images.at(0).rows)
+        posy = posy - _images.at(0).rows;
       cv::circle(_images.at(1), cv::Point2d(posx, posy), 10, vehicleColor, -1);
     }
   }
@@ -63,4 +71,5 @@ void Graphics::drawTrafficObjects()
 
   // display background and overlay image
   cv::imshow("Mark Simulator", _images.at(2));
+  cv::waitKey(1);
 }
