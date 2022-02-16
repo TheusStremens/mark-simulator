@@ -87,6 +87,19 @@ void Vehicle::drive()
       l = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (x1 - x2));
       xv = x1 + completion * dx; // new position based on line equation in parameter form
       yv = y1 + completion * dy;
+      // Check the direction to define the lane.
+      double xv_inc = 0.0;
+      double yv_inc = 0.0;
+      if (xv > x1) // Left to right. Bottom lane.
+        yv_inc = 10;
+      if (xv < x1) // Right to left. Top lane.
+        yv_inc = -10;
+      if (yv > y1) // Top to bottom. Left lane
+        xv_inc = -10;
+      if (yv < y1) // Bottom to top. Right lane
+        xv_inc = 10;
+      xv += xv_inc;
+      yv += yv_inc;
       this->setPosition(xv, yv);
 
       // check wether halting position in front of destination has been reached
@@ -104,7 +117,7 @@ void Vehicle::drive()
       }
 
       // check wether intersection has been crossed
-      if (completion >= 1.0 && hasEnteredIntersection)
+      if (completion >= 1.00 && hasEnteredIntersection)
       {
         // choose next street and destination
         std::vector<std::shared_ptr<Street>> streetOptions = _currDestination->queryStreets(_currStreet);
