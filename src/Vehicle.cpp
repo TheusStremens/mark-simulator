@@ -55,7 +55,7 @@ void Vehicle::drive()
       _posStreet += _speed * timeSinceLastUpdate / 1000;
 
       // compute completion rate of current street
-      double completion = _posStreet / _currStreet->getLength();
+      double completion = _posStreet / 1000;
 
       // compute current pixel position on street based on driving direction
       std::shared_ptr<Intersection> i1, i2;
@@ -91,13 +91,13 @@ void Vehicle::drive()
       double xv_inc = 0.0;
       double yv_inc = 0.0;
       if (xv > x1) // Left to right. Bottom lane.
-        yv_inc = 10;
+        yv_inc = _current_lane == 1 ? 10 : 29;
       if (xv < x1) // Right to left. Top lane.
-        yv_inc = -10;
+        yv_inc = _current_lane == 1 ? -10 : -29;
       if (yv > y1) // Top to bottom. Left lane
-        xv_inc = -10;
+        xv_inc = _current_lane == 1 ? -10 : -29;
       if (yv < y1) // Bottom to top. Right lane
-        xv_inc = 10;
+        xv_inc = _current_lane == 1 ? 10 : 29;
       xv += xv_inc;
       yv += yv_inc;
       this->setPosition(xv, yv);
@@ -134,6 +134,16 @@ void Vehicle::drive()
         {
           // this street is a dead-end, so drive back the same way
           nextStreet = _currStreet;
+        }
+
+        if (nextStreet->getNumberLanes() == 1)
+          _current_lane = 1;
+        else
+        {
+          std::random_device rd;
+          std::mt19937 eng(rd());
+          std::uniform_int_distribution<> distr(1, 2);
+          _current_lane = distr(eng);
         }
 
         // pick the one intersection at which the vehicle is currently not
