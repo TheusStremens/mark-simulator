@@ -97,81 +97,81 @@ createTrafficObjects(std::vector<std::shared_ptr<Street>> &streets,
 
   // Central vertical streets from bottom to up.
   streets.push_back(std::make_shared<Street>(StreetOrientation::vertical, true));
-  streets.at(0)->setInIntersection(intersections.at(0));
-  streets.at(0)->setOutIntersection(intersections.at(2));
+  streets.at(0)->setIntersectionA(intersections.at(0));
+  streets.at(0)->setIntersectionB(intersections.at(2));
   addLanesToWideVerticalStreet(streets.at(0));
   streets.push_back(std::make_shared<Street>(StreetOrientation::vertical));
-  streets.at(1)->setInIntersection(intersections.at(0));
-  streets.at(1)->setOutIntersection(intersections.at(1));
+  streets.at(1)->setIntersectionA(intersections.at(0));
+  streets.at(1)->setIntersectionB(intersections.at(1));
   addLanesToWideVerticalStreet(streets.at(1));
   streets.push_back(std::make_shared<Street>(StreetOrientation::vertical));
-  streets.at(2)->setInIntersection(intersections.at(1));
-  streets.at(2)->setOutIntersection(intersections.at(2));
+  streets.at(2)->setIntersectionA(intersections.at(1));
+  streets.at(2)->setIntersectionB(intersections.at(2));
   addLanesToWideVerticalStreet(streets.at(2));
   // Left vertical streets from bottom to up.
   streets.push_back(std::make_shared<Street>(StreetOrientation::vertical, true));
-  streets.at(3)->setInIntersection(intersections.at(3));
-  streets.at(3)->setOutIntersection(intersections.at(5));
+  streets.at(3)->setIntersectionA(intersections.at(3));
+  streets.at(3)->setIntersectionB(intersections.at(5));
   addLanesToSmallVerticalStreet(streets.at(3));
   streets.push_back(std::make_shared<Street>(StreetOrientation::vertical));
-  streets.at(4)->setInIntersection(intersections.at(3));
-  streets.at(4)->setOutIntersection(intersections.at(4));
+  streets.at(4)->setIntersectionA(intersections.at(3));
+  streets.at(4)->setIntersectionB(intersections.at(4));
   addLanesToSmallVerticalStreet(streets.at(4));
   streets.push_back(std::make_shared<Street>(StreetOrientation::vertical));
-  streets.at(5)->setInIntersection(intersections.at(4));
-  streets.at(5)->setOutIntersection(intersections.at(5));
+  streets.at(5)->setIntersectionA(intersections.at(4));
+  streets.at(5)->setIntersectionB(intersections.at(5));
   addLanesToSmallVerticalStreet(streets.at(5));
   // Right vertical streets from bottom to up.
   streets.push_back(std::make_shared<Street>(StreetOrientation::vertical, true));
-  streets.at(6)->setInIntersection(intersections.at(6));
-  streets.at(6)->setOutIntersection(intersections.at(8));
+  streets.at(6)->setIntersectionA(intersections.at(6));
+  streets.at(6)->setIntersectionB(intersections.at(8));
   addLanesToSmallVerticalStreet(streets.at(6));
   streets.push_back(std::make_shared<Street>(StreetOrientation::vertical));
-  streets.at(7)->setInIntersection(intersections.at(6));
-  streets.at(7)->setOutIntersection(intersections.at(7));
+  streets.at(7)->setIntersectionA(intersections.at(6));
+  streets.at(7)->setIntersectionB(intersections.at(7));
   addLanesToSmallVerticalStreet(streets.at(7));
   streets.push_back(std::make_shared<Street>(StreetOrientation::vertical));
-  streets.at(8)->setInIntersection(intersections.at(7));
-  streets.at(8)->setOutIntersection(intersections.at(8));
+  streets.at(8)->setIntersectionA(intersections.at(7));
+  streets.at(8)->setIntersectionB(intersections.at(8));
   addLanesToSmallVerticalStreet(streets.at(8));
   // Central horizontal streets from left to right.
   streets.push_back(std::make_shared<Street>(StreetOrientation::horizontal, true));
-  streets.at(9)->setInIntersection(intersections.at(4));
-  streets.at(9)->setOutIntersection(intersections.at(7));
+  streets.at(9)->setIntersectionA(intersections.at(4));
+  streets.at(9)->setIntersectionB(intersections.at(7));
   addLanesToWideHorizontalStreet(streets.at(9));
   streets.push_back(std::make_shared<Street>(StreetOrientation::horizontal));
-  streets.at(10)->setInIntersection(intersections.at(4));
-  streets.at(10)->setOutIntersection(intersections.at(1));
+  streets.at(10)->setIntersectionA(intersections.at(4));
+  streets.at(10)->setIntersectionB(intersections.at(1));
   addLanesToWideHorizontalStreet(streets.at(10));
   streets.push_back(std::make_shared<Street>(StreetOrientation::horizontal));
-  streets.at(11)->setInIntersection(intersections.at(1));
-  streets.at(11)->setOutIntersection(intersections.at(7));
+  streets.at(11)->setIntersectionA(intersections.at(1));
+  streets.at(11)->setIntersectionB(intersections.at(7));
   addLanesToWideHorizontalStreet(streets.at(11));
   // Bottom horizontal streets from left to right.
   streets.push_back(std::make_shared<Street>(StreetOrientation::horizontal, true));
-  streets.at(12)->setInIntersection(intersections.at(3));
-  streets.at(12)->setOutIntersection(intersections.at(6));
+  streets.at(12)->setIntersectionA(intersections.at(3));
+  streets.at(12)->setIntersectionB(intersections.at(6));
   addLanesToSmallHorizontalStreet(streets.at(12));
   streets.push_back(std::make_shared<Street>(StreetOrientation::horizontal));
-  streets.at(13)->setInIntersection(intersections.at(3));
-  streets.at(13)->setOutIntersection(intersections.at(0));
+  streets.at(13)->setIntersectionA(intersections.at(3));
+  streets.at(13)->setIntersectionB(intersections.at(0));
   addLanesToSmallHorizontalStreet(streets.at(13));
   streets.push_back(std::make_shared<Street>(StreetOrientation::horizontal));
-  streets.at(14)->setInIntersection(intersections.at(0));
-  streets.at(14)->setOutIntersection(intersections.at(6));
+  streets.at(14)->setIntersectionA(intersections.at(0));
+  streets.at(14)->setIntersectionB(intersections.at(6));
   addLanesToSmallHorizontalStreet(streets.at(14));
   // Top horizontal streets from left to right.
   streets.push_back(std::make_shared<Street>(StreetOrientation::horizontal, true));
-  streets.at(15)->setInIntersection(intersections.at(5));
-  streets.at(15)->setOutIntersection(intersections.at(8));
+  streets.at(15)->setIntersectionA(intersections.at(5));
+  streets.at(15)->setIntersectionB(intersections.at(8));
   addLanesToSmallHorizontalStreet(streets.at(15));
   streets.push_back(std::make_shared<Street>(StreetOrientation::horizontal));
-  streets.at(16)->setInIntersection(intersections.at(5));
-  streets.at(16)->setOutIntersection(intersections.at(2));
+  streets.at(16)->setIntersectionA(intersections.at(5));
+  streets.at(16)->setIntersectionB(intersections.at(2));
   addLanesToSmallHorizontalStreet(streets.at(16));
   streets.push_back(std::make_shared<Street>(StreetOrientation::horizontal));
-  streets.at(17)->setInIntersection(intersections.at(2));
-  streets.at(17)->setOutIntersection(intersections.at(8));
+  streets.at(17)->setIntersectionA(intersections.at(2));
+  streets.at(17)->setIntersectionB(intersections.at(8));
   addLanesToSmallHorizontalStreet(streets.at(17));
 
   // Add vehicles to streets.
@@ -181,6 +181,7 @@ createTrafficObjects(std::vector<std::shared_ptr<Street>> &streets,
     vehicles.at(nv)->setCurrentStreet(streets.at(nv % 9));
     vehicles.at(nv)->setCurrentDestination(intersections.at(nv % 9));
     vehicles.at(nv)->pickLane();
+    vehicles.at(nv)->chooseStartingPosition();
   }
 }
 

@@ -7,6 +7,8 @@
 #include "Vehicle.hpp"
 #include <iostream>
 
+const bool kDebug = false;
+
 Graphics::Graphics()
 {
   _color_map[Color::RED] = cv::Scalar(0, 0, 255);
@@ -55,8 +57,11 @@ void Graphics::drawTrafficObjects()
       int r = sqrt(255 * 255 - g * g - b * b); // ensure that length of color vector is always 255
       cv::Scalar vehicleColor = cv::Scalar(b, g, r);
       cv::circle(_images.at(1), cv::Point2d(posx, posy), 10, vehicleColor, -1);
-      auto vehicle = dynamic_cast<Vehicle*>(it.get());
-      cv::rectangle(_images.at(1), vehicle->getCurrentDestination()->getBoundingBox(), cv::Scalar(0, 240, 0), 3);
+      if (kDebug)
+      {
+        auto vehicle = dynamic_cast<Vehicle*>(it.get());
+        cv::rectangle(_images.at(1), vehicle->getCurrentDestination()->getBoundingBox(), vehicleColor, 3);
+      }
     }
   }
 
