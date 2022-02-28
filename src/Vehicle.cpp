@@ -27,6 +27,39 @@ void Vehicle::simulate()
   threads.emplace_back(std::thread(&Vehicle::drive, this));
 }
 
+void Vehicle::pickLane()
+{
+
+  std::shared_ptr<Intersection> current_intersection;
+  current_intersection = _currDestination->getID() == _currStreet->getInIntersection()->getID()
+                         ? _currStreet->getOutIntersection()
+                         : _currStreet->getInIntersection();
+  double current_x, current_y, next_x, next_y;
+  current_intersection->getPosition(current_x, current_y);
+  _currDestination->getPosition(next_x, next_y);
+
+  Direction new_direction;
+  if (next_x < current_x)
+    new_direction = !_currStreet->isLoopStreet() ? Direction::left : Direction::right;
+  if (next_x > current_x)
+    new_direction = !_currStreet->isLoopStreet() ? Direction::right : Direction::left;
+  if (next_y < current_y)
+    new_direction = !_currStreet->isLoopStreet() ? Direction::up : Direction::down;
+  if (next_y > current_y)
+    new_direction = !_currStreet->isLoopStreet() ? Direction::down : Direction::up;
+  std::vector<std::shared_ptr<Lane>> possible_lanes = _currStreet->getLanesByDirection(new_direction);
+  uint num_possible_lanes = possible_lanes.size();
+  if (num_possible_lanes == 1)
+    _current_lane = possible_lanes[0];
+  else
+  {
+    std::random_device rd;
+    std::mt19937 eng(rd());
+    std::uniform_int_distribution<> distr(0, num_possible_lanes - 1);
+    _current_lane = possible_lanes.at(distr(eng));
+  }
+}
+
 // virtual function which is executed in a thread
 void Vehicle::drive()
 {
@@ -51,73 +84,29 @@ void Vehicle::drive()
     long timeSinceLastUpdate = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - lastUpdate).count();
     if (timeSinceLastUpdate >= cycleDuration)
     {
-      // update position with a constant velocity motion model
-      _posStreet += _speed * timeSinceLastUpdate / 1000;
+      double target_x, target_y;
+      _currDestination->getPosition(target_x, target_y);
+      target_x += _current_lane->getHorizontalStreetOffset();
+      target_y += _current_lane->getVerticalStreetOffset();
 
-      // compute completion rate of current street
-      double completion = _posStreet / 1000;
-
-      // compute current pixel position on street based on driving direction
-      std::shared_ptr<Intersection> i1, i2;
-      i2 = _currDestination;
-      i1 = i2->getID() == _currStreet->getInIntersection()->getID() ? _currStreet->getOutIntersection() : _currStreet->getInIntersection();
-
-      double x1, y1, x2, y2, xv, yv, dx, dy, l;
-      i1->getPosition(x1, y1);
-      i2->getPosition(x2, y2);
-      dx = x2 - x1;
-      dy = y2 - y1;
-      // Check if the distance is bigger than 300 pixels because this configure a jump
-      // of more than one intersection. In this case we need to do a little trick to
-      // make the vehicle moves beyond the image limits.
-      if (std::fabs(dx) > 300)
+      if (_currStreet->getOrientation() == StreetOrientation::vertical)
       {
-        if (x1 < x2)
-          dx = -(x1 + (1000 - x2));
+        // Not aligned horizontally.
+        if (target_x != _posX)
+          _direction = (target_x > _posX) ? Direction::right : Direction::left;
         else
-          dx = x2 + (1000 - x1);
+          _direction = _current_lane->getDirection();
       }
-      if (std::fabs(dy) > 300)
+      if (_currStreet->getOrientation() == StreetOrientation::horizontal)
       {
-        if (y1 < y2)
-          dy = -(y1 + (1000 - y2));
+        // Not aligned vertically.
+        if (target_y != _posY)
+          _direction = (target_y > _posY) ? Direction::down : Direction::up;
         else
-          dy = y2 + (1000 - y1);
-      }
-      l = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (x1 - x2));
-      xv = x1 + completion * dx; // new position based on line equation in parameter form
-      yv = y1 + completion * dy;
-      // Check the direction to define the lane.
-      double xv_inc = 0.0;
-      double yv_inc = 0.0;
-      if (xv > x1) // Left to right. Bottom lane.
-        yv_inc = _current_lane == 1 ? 10 : 29;
-      if (xv < x1) // Right to left. Top lane.
-        yv_inc = _current_lane == 1 ? -10 : -29;
-      if (yv > y1) // Top to bottom. Left lane
-        xv_inc = _current_lane == 1 ? -10 : -29;
-      if (yv < y1) // Bottom to top. Right lane
-        xv_inc = _current_lane == 1 ? 10 : 29;
-      xv += xv_inc;
-      yv += yv_inc;
-      this->setPosition(xv, yv);
-
-      // check wether halting position in front of destination has been reached
-      if (completion >= 0.9 && !hasEnteredIntersection)
-      {
-        // request entry to the current intersection (using async)
-        // auto ftrEntryGranted = std::async(&Intersection::addVehicleToQueue, _currDestination, get_shared_this());
-
-        // wait until entry has been granted
-        // ftrEntryGranted.get();
-
-        // slow down and set intersection flag
-        _speed /= 10.0;
-        hasEnteredIntersection = true;
+          _direction = _current_lane->getDirection();
       }
 
-      // check wether intersection has been crossed
-      if (completion >= 1.00 && hasEnteredIntersection)
+      if (_currDestination->isInside(_posX, _posY))
       {
         // choose next street and destination
         std::vector<std::shared_ptr<Street>> streetOptions = _currDestination->queryStreets(_currStreet);
@@ -136,16 +125,6 @@ void Vehicle::drive()
           nextStreet = _currStreet;
         }
 
-        if (nextStreet->getNumberLanes() == 1)
-          _current_lane = 1;
-        else
-        {
-          std::random_device rd;
-          std::mt19937 eng(rd());
-          std::uniform_int_distribution<> distr(1, 2);
-          _current_lane = distr(eng);
-        }
-
         // pick the one intersection at which the vehicle is currently not
         std::shared_ptr<Intersection> nextIntersection = nextStreet->getInIntersection()->getID() == _currDestination->getID() ? nextStreet->getOutIntersection() : nextStreet->getInIntersection();
 
@@ -155,11 +134,36 @@ void Vehicle::drive()
         // assign new street and destination
         this->setCurrentDestination(nextIntersection);
         this->setCurrentStreet(nextStreet);
-
-        // reset speed and intersection flag
-        _speed *= 10.0;
-        hasEnteredIntersection = false;
+        pickLane();
       }
+
+      // Update position.
+      switch (_direction)
+      {
+        case Direction::up:
+          _posY -= 0.25;
+          break;
+        case Direction::down:
+          _posY += 0.25;
+          break;
+        case Direction::left:
+          _posX -= 0.25;
+          break;
+        case Direction::right:
+          _posX += 0.25;
+          break;
+      }
+
+      // Loop position in the image.
+      if (_posX < 0)
+        _posX =  999;
+      if (_posX > 999)
+        _posX =  0;
+      if (_posY < 0)
+        _posY =  999;
+      if (_posY > 999)
+        _posY =  0;
+
 
       // reset stop watch for next cycle
       lastUpdate = std::chrono::system_clock::now();

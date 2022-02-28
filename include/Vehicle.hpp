@@ -2,6 +2,7 @@
 #define VEHICLE_H
 
 #include "TrafficObject.hpp"
+#include "Lane.hpp"
 
 // forward declarations to avoid include cycle
 class Street;
@@ -19,6 +20,9 @@ public:
 
   // typical behaviour methods
   void simulate();
+  void pickLane();
+
+  inline std::shared_ptr<Intersection> getCurrentDestination() { return _currDestination; }
 
   // miscellaneous
   std::shared_ptr<Vehicle> get_shared_this() { return shared_from_this(); }
@@ -31,7 +35,8 @@ private:
   std::shared_ptr<Intersection> _currDestination; // destination to which the vehicle is currently driving
   double _posStreet;                              // position on current street
   double _speed;                                  // ego speed in m/s
-  uint _current_lane{1};
+  std::shared_ptr<Lane> _current_lane;
+  Direction _direction;
 };
 
 #endif

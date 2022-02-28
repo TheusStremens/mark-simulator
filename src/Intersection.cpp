@@ -50,8 +50,16 @@ void Intersection::addStreet(std::shared_ptr<Street> street)
 void
 Intersection::setBoundingBoxSize(const cv::Size &bb_size)
 {
-  cv::Point top_left = cv::Point(_posX - bb_size.width, _posY - bb_size.height);
+  cv::Point top_left = cv::Point(_posX - (bb_size.width / 2.0), _posY - (bb_size.height / 2.0));
   _bounding_box = cv::Rect(top_left, bb_size);
+}
+
+bool
+Intersection::isInside(const int &pos_x, const int &pos_y)
+{
+  bool x_check = (_bounding_box.x < pos_x && pos_x < _bounding_box.x + _bounding_box.width);
+  bool y_check = (_bounding_box.y < pos_y && pos_y < _bounding_box.y +_bounding_box.height);
+  return x_check && y_check;
 }
 
 std::vector<std::shared_ptr<Street>> Intersection::queryStreets(std::shared_ptr<Street> incoming)

@@ -13,10 +13,10 @@ const int kFirstLeftLaneHorizontalStreet = -10;
 const int kFirstRightLaneHorizontalStreet = 10;
 const int kFirstUpLaneVerticalStreet = 10;
 const int kFirstDownLaneVerticalStreet = -10;
-const int kSecondLeftLaneHorizontalStreet = 30;
-const int kSecondRightLaneHorizontalStreet = -30;
-const int kSecondUpLaneVerticalStreet = 10;
-const int kSecondDownLaneVerticalStreet = -10;
+const int kSecondLeftLaneHorizontalStreet = -30;
+const int kSecondRightLaneHorizontalStreet = 30;
+const int kSecondUpLaneVerticalStreet = 30;
+const int kSecondDownLaneVerticalStreet = -30;
 
 class Lane
 {
@@ -27,6 +27,7 @@ public:
 
   inline int getHorizontalStreetOffset() { return _horizontal_street_offset; }
   inline int getVerticalStreetOffset() { return _vertical_street_offset; }
+  inline Direction getDirection() { return _direction; }
 
 private:
   /// Lane direction.

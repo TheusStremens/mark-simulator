@@ -54,6 +54,8 @@ public:
   void vehicleHasLeft();
   bool trafficLightIsGreen();
   void setBoundingBoxSize(const cv::Size &bb_size);
+  bool isInside(const int &pos_x, const int &pos_y);
+  inline cv::Rect getBoundingBox() { return _bounding_box; }
 
 private:
   void processVehicleQueue();

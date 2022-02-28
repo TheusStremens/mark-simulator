@@ -17,9 +17,11 @@ addLanesToWideVerticalStreet(std::shared_ptr<Street> &street)
   street->addLane(lane_2);
 
   Lane lane_3(Direction::down);
-  lane_3.setVerticalStreetOffset(kFirstDownLaneVerticalStreet);
+  lane_3.setHorizontalStreetOffset(kFirstDownLaneVerticalStreet);
+  street->addLane(lane_3);
   Lane lane_4(Direction::down);
-  lane_4.setVerticalStreetOffset(kSecondDownLaneVerticalStreet);
+  lane_4.setHorizontalStreetOffset(kSecondDownLaneVerticalStreet);
+  street->addLane(lane_4);
 }
 
 void
@@ -29,7 +31,8 @@ addLanesToSmallVerticalStreet(std::shared_ptr<Street> &street)
   lane_1.setHorizontalStreetOffset(kFirstUpLaneVerticalStreet);
   street->addLane(lane_1);
   Lane lane_2(Direction::down);
-  lane_2.setVerticalStreetOffset(kFirstDownLaneVerticalStreet);
+  lane_2.setHorizontalStreetOffset(kFirstDownLaneVerticalStreet);
+  street->addLane(lane_2);
 }
 
 void
@@ -44,8 +47,10 @@ addLanesToWideHorizontalStreet(std::shared_ptr<Street> &street)
 
   Lane lane_3(Direction::right);
   lane_3.setVerticalStreetOffset(kFirstRightLaneHorizontalStreet);
+  street->addLane(lane_3);
   Lane lane_4(Direction::right);
   lane_4.setVerticalStreetOffset(kSecondRightLaneHorizontalStreet);
+  street->addLane(lane_4);
 }
 
 void
@@ -56,6 +61,7 @@ addLanesToSmallHorizontalStreet(std::shared_ptr<Street> &street)
   street->addLane(lane_1);
   Lane lane_2(Direction::right);
   lane_2.setVerticalStreetOffset(kFirstRightLaneHorizontalStreet);
+  street->addLane(lane_2);
 }
 
 void
@@ -174,6 +180,7 @@ createTrafficObjects(std::vector<std::shared_ptr<Street>> &streets,
     vehicles.push_back(std::make_shared<Vehicle>());
     vehicles.at(nv)->setCurrentStreet(streets.at(nv % 9));
     vehicles.at(nv)->setCurrentDestination(intersections.at(nv % 9));
+    vehicles.at(nv)->pickLane();
   }
 }
 
