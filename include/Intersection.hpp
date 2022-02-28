@@ -12,6 +12,11 @@
 class Street;
 class Vehicle;
 
+const cv::Size kBigSquare = cv::Size(80, 80);
+const cv::Size kSmallSquare = cv::Size(40, 40);
+const cv::Size kHorizontalWideSquare = cv::Size(80, 40);
+const cv::Size kVerticalWideSquare = cv::Size(40, 80);
+
 // Auxiliary class to queue and dequeue waiting vehicles in a thread-safe manner
 class WaitingVehicles
 {
@@ -43,11 +48,12 @@ public:
 
   void addVehicleToQueue(std::shared_ptr<Vehicle> vehicle);
   void addStreet(std::shared_ptr<Street> street);
-  //// Return pointer to current list of all outgoing streets.
+  /// Return pointer to current list of all outgoing streets.
   std::vector<std::shared_ptr<Street>> queryStreets(std::shared_ptr<Street> incoming);
   void simulate();
   void vehicleHasLeft();
   bool trafficLightIsGreen();
+  void setBoundingBoxSize(const cv::Size &bb_size);
 
 private:
   void processVehicleQueue();

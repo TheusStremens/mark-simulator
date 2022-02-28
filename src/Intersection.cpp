@@ -47,6 +47,13 @@ void Intersection::addStreet(std::shared_ptr<Street> street)
   _streets.push_back(street);
 }
 
+void
+Intersection::setBoundingBoxSize(const cv::Size &bb_size)
+{
+  cv::Point top_left = cv::Point(_posX - bb_size.width, _posY - bb_size.height);
+  _bounding_box = cv::Rect(top_left, bb_size);
+}
+
 std::vector<std::shared_ptr<Street>> Intersection::queryStreets(std::shared_ptr<Street> incoming)
 {
   // Store all outgoing streets in a vector ...

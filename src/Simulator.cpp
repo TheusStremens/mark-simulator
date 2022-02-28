@@ -69,16 +69,25 @@ createTrafficObjects(std::vector<std::shared_ptr<Street>> &streets,
   // Position intersections in pixel coordinates.
   // Middle part from bottom to up.
   intersections.at(0)->setPosition(501, 781);
+  intersections.at(0)->setBoundingBoxSize(kHorizontalWideSquare);
   intersections.at(1)->setPosition(501, 502);
+  intersections.at(1)->setBoundingBoxSize(kBigSquare);
   intersections.at(2)->setPosition(501, 242);
+  intersections.at(2)->setBoundingBoxSize(kHorizontalWideSquare);
   // Left part from bottom to up.
   intersections.at(3)->setPosition(241, 781);
+  intersections.at(3)->setBoundingBoxSize(kSmallSquare);
   intersections.at(4)->setPosition(241, 502);
+  intersections.at(4)->setBoundingBoxSize(kVerticalWideSquare);
   intersections.at(5)->setPosition(241, 242);
+  intersections.at(5)->setBoundingBoxSize(kSmallSquare);
   // Right part from bottom to up.
   intersections.at(6)->setPosition(771, 781);
+  intersections.at(6)->setBoundingBoxSize(kSmallSquare);
   intersections.at(7)->setPosition(771, 502);
+  intersections.at(7)->setBoundingBoxSize(kVerticalWideSquare);
   intersections.at(8)->setPosition(771, 242);
+  intersections.at(8)->setBoundingBoxSize(kSmallSquare);
 
   // Central vertical streets from bottom to up.
   streets.push_back(std::make_shared<Street>(StreetOrientation::vertical, true));
