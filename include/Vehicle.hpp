@@ -75,8 +75,10 @@ private:
   std::shared_ptr<Intersection> _current_destination;
   /// The intersection that the vehicle was before.
   std::shared_ptr<Intersection> _previous_intersection;
-  /// Ego speed in pixels.
+  /// Ego speed in pixels. This speed can vary.
   double _speed;
+  /// Base fixed speed used as reference.
+  double _base_speed;
   /// Lane that the vehicle is currently on.
   std::shared_ptr<Lane> _current_lane;
   /// The direction of the vehicle's movement.

@@ -9,6 +9,7 @@ Vehicle::Vehicle()
   _current_street = nullptr;
   _type = ObjectType::objectVehicle;
   _speed = 0.25;
+  _base_speed = _speed;
 }
 
 void Vehicle::simulate()
@@ -176,6 +177,14 @@ void Vehicle::drive()
         pickLane();
       }
 
+      // Slow down if the vehicle is in an intersection. We use the previous because as
+      // soon it enters in the current destination, a new intersection is choosen to be
+      // the next.
+      if (_previous_intersection->isInside(_posX, _posY))
+        _speed = _base_speed * 0.5;
+      else
+        _speed = _base_speed;
+
       // Update position.
       switch (_direction)
       {
@@ -202,7 +211,6 @@ void Vehicle::drive()
         _posY =  999;
       if (_posY > 999)
         _posY =  0;
-
 
       // Reset stop watch for next cycle.
       last_update = std::chrono::system_clock::now();
