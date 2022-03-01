@@ -64,18 +64,17 @@ private:
   void drive();
 
   /**
-   * @brief Returns the intersection that the vehicle was before.
+   * @brief Based on the current street, infer what was the previous intersection.
    *
-   * @return std::shared_ptr<Intersection>
    */
-  std::shared_ptr<Intersection> calculatePreviousIntersection();
+  void calculatePreviousIntersection();
 
   /// Street on which the vehicle is currently on.
   std::shared_ptr<Street> _current_street;
   /// Destination to which the vehicle is currently driving.
   std::shared_ptr<Intersection> _current_destination;
   /// The intersection that the vehicle was before.
-  std::shared_ptr<Intersection> _previous_intersection
+  std::shared_ptr<Intersection> _previous_intersection;
   /// Ego speed in pixels.
   double _speed;
   /// Lane that the vehicle is currently on.

@@ -17,20 +17,20 @@ void Vehicle::simulate()
   threads.emplace_back(std::thread(&Vehicle::drive, this));
 }
 
-std::shared_ptr<Intersection>
-Vehicle::getPreviousIntersection()
+void
+Vehicle::calculatePreviousIntersection()
 {
   if (_current_destination->getID() == _current_street->getIntersectionA()->getID())
-    return _current_street->getIntersectionB();
-  return _current_street->getIntersectionA();
+    _previous_intersection = _current_street->getIntersectionB();
+  else
+    _previous_intersection = _current_street->getIntersectionA();
 }
 
 void
 Vehicle::chooseStartingPosition()
 {
-  std::shared_ptr<Intersection> previous_intersection = getPreviousIntersection();
   double current_x, current_y, next_x, next_y;
-  previous_intersection->getPosition(current_x, current_y);
+  _previous_intersection->getPosition(current_x, current_y);
   _current_destination->getPosition(next_x, next_y);
   // Loop streets are very hard to deal with it, so, simplify this case.
   if (_current_street->isLoopStreet())
@@ -67,9 +67,10 @@ Vehicle::chooseStartingPosition()
 
 void Vehicle::pickLane()
 {
-  std::shared_ptr<Intersection> previous_intersection = getPreviousIntersection();;
+  if (!_previous_intersection)
+    calculatePreviousIntersection();
   double current_x, current_y, next_x, next_y;
-  previous_intersection->getPosition(current_x, current_y);
+  _previous_intersection->getPosition(current_x, current_y);
   _current_destination->getPosition(next_x, next_y);
 
   Direction new_direction;
@@ -164,6 +165,9 @@ void Vehicle::drive()
 
         // send signal to intersection that vehicle has left the intersection
         // _current_destination->vehicleHasLeft(get_shared_this());
+
+        // Update the previous intersection.
+        _previous_intersection = _current_destination;
 
         // Assign new street and destination.
         this->setCurrentDestination(next_intersection);
