@@ -67,7 +67,8 @@ addLanesToSmallHorizontalStreet(std::shared_ptr<Street> &street)
 void
 createTrafficObjects(std::vector<std::shared_ptr<Street>> &streets,
                      std::vector<std::shared_ptr<Intersection>> &intersections,
-                     std::vector<std::shared_ptr<Vehicle>> &vehicles)
+                     std::vector<std::shared_ptr<Vehicle>> &vehicles,
+                     const uint &num_vehicles = 1)
 {
   for (size_t i = 0; i < 9; i++)
     intersections.push_back(std::make_shared<Intersection>());
@@ -175,7 +176,7 @@ createTrafficObjects(std::vector<std::shared_ptr<Street>> &streets,
   addLanesToSmallHorizontalStreet(streets.at(17));
 
   // Add vehicles to streets.
-  for (size_t nv = 0; nv < 1; nv++)
+  for (size_t nv = 0; nv < num_vehicles; nv++)
   {
     vehicles.push_back(std::make_shared<Vehicle>());
     vehicles.at(nv)->setCurrentStreet(streets.at(nv % 9));
@@ -191,7 +192,8 @@ int main(int argc, char *argv[])
   std::vector<std::shared_ptr<Street>> streets;
   std::vector<std::shared_ptr<Intersection>> intersections;
   std::vector<std::shared_ptr<Vehicle>> vehicles;
-  createTrafficObjects(streets, intersections, vehicles);
+  uint num_vehicles = (argc > 1) ? std::stoi(argv[1]) : 1;
+  createTrafficObjects(streets, intersections, vehicles, num_vehicles);
 
   // simulate intersection
   std::for_each(intersections.begin(), intersections.end(), [](std::shared_ptr<Intersection> &i) {
