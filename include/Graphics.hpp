@@ -12,11 +12,18 @@ enum Color
   BLUE
 };
 
+/**
+ * @brief Class that renders the simulation.
+ *
+ */
 class Graphics
 {
 public:
+  /// Constructor.
   Graphics();
+  /// Load the display image.
   void loadBackgroundImage();
+  /// Infinit loop that draw all the objects.
   void simulate();
 
   inline void setTrafficObjects(std::vector<std::shared_ptr<TrafficObject>> &traffic_objects)

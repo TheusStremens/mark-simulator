@@ -13,31 +13,42 @@ enum ObjectType
   objectStreet,
 };
 
+/**
+ * @brief Generic object used as a base/interface class.
+ *
+ */
 class TrafficObject
 {
 public:
-  // constructor / desctructor
+  /// Constructor
   TrafficObject();
+  /// Desctructor.
   ~TrafficObject();
 
-  // getter and setter
-  int getID() { return _id; }
+  // * Small get/set methods that are self explanatory * //
+  int getID() { return _id; };
   void setPosition(double x, double y);
   void getPosition(double &x, double &y);
-  ObjectType getType() { return _type; }
+  ObjectType getType() { return _type; };
 
-  // typical behaviour methods
-  virtual void simulate(){};
+  // Abstract method that defines what the class will do in the simulation.
+  virtual void simulate() {};
 
 protected:
-  ObjectType _type;                 // identifies the class type
-  int _id;                          // every traffic object has its own unique id
-  double _posX, _posY;              // vehicle position in pixels
-  std::vector<std::thread> threads; // holds all threads that have been launched within this object
-  static std::mutex _mtx;           // mutex shared by all traffic objects for protecting cout
+  /// Identifies the class type.
+  ObjectType _type;
+  /// Every traffic object has its own unique id.
+  int _id;
+  /// Object position in pixels.
+  double _pos_x, _pos_y;
+  /// Holds all _threads that have been launched within this object.
+  std::vector<std::thread> _threads;
+  /// Mutex shared by all traffic objects for protecting cout.
+  static std::mutex _mtx;
 
 private:
-  static int _idCnt; // global variable for counting object ids
+  /// Global variable for counting object ids.
+  static int _id_counter;
 };
 
 #endif

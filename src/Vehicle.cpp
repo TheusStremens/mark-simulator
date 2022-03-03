@@ -15,7 +15,7 @@ Vehicle::Vehicle()
 void Vehicle::simulate()
 {
   // Launch drive function in a thread.
-  threads.emplace_back(std::thread(&Vehicle::drive, this));
+  _threads.emplace_back(std::thread(&Vehicle::drive, this));
 }
 
 void
@@ -36,8 +36,8 @@ Vehicle::chooseStartingPosition()
   // Loop streets are very hard to deal with it, so, simplify this case.
   if (_current_street->isLoopStreet())
   {
-    _posX = current_x;
-    _posY = current_y;
+    _pos_x = current_x;
+    _pos_y = current_y;
     return;
   }
   // Otherwise choose the position randomly along the street.
@@ -49,8 +49,8 @@ Vehicle::chooseStartingPosition()
     if (current_x > next_x)
       std::swap(current_x, next_x);
     std::uniform_int_distribution<> distr(current_x, next_x);
-    _posX = distr(eng);
-    _posY = current_y;
+    _pos_x = distr(eng);
+    _pos_y = current_y;
   }
   if (_current_street->getOrientation() == StreetOrientation::vertical)
   {
@@ -58,12 +58,12 @@ Vehicle::chooseStartingPosition()
     if (current_y > next_y)
       std::swap(current_y, next_y);
     std::uniform_int_distribution<> distr(current_y, next_y);
-    _posY = distr(eng);
-    _posX = current_x;
+    _pos_y = distr(eng);
+    _pos_x = current_x;
   }
   // Apply the lane offsets.
-  _posX += _current_lane->getHorizontalStreetOffset();
-  _posY += _current_lane->getVerticalStreetOffset();
+  _pos_x += _current_lane->getHorizontalStreetOffset();
+  _pos_y += _current_lane->getVerticalStreetOffset();
 }
 
 void Vehicle::pickLane()
@@ -135,22 +135,22 @@ void Vehicle::drive()
       if (_current_street->getOrientation() == StreetOrientation::vertical)
       {
         // If it is not aligned horizontally.
-        if (target_x != _posX)
-          _direction = (target_x > _posX) ? Direction::right : Direction::left;
+        if (target_x != _pos_x)
+          _direction = (target_x > _pos_x) ? Direction::right : Direction::left;
         else
           _direction = _current_lane->getDirection(); // Just follow the lane direction.
       }
       if (_current_street->getOrientation() == StreetOrientation::horizontal)
       {
         // If it is not aligned vertically.
-        if (target_y != _posY)
-          _direction = (target_y > _posY) ? Direction::down : Direction::up;
+        if (target_y != _pos_y)
+          _direction = (target_y > _pos_y) ? Direction::down : Direction::up;
         else
           _direction = _current_lane->getDirection(); // Just follow the lane direction.
       }
 
       // If the vehicle entered in the intersection area.
-      if (_current_destination->isInside(_posX, _posY))
+      if (_current_destination->isInside(_pos_x, _pos_y))
       {
         // Choose next street and destination.
         std::vector<std::shared_ptr<Street>> street_options = _current_destination->queryStreets(_current_street);
@@ -178,7 +178,7 @@ void Vehicle::drive()
       // Slow down if the vehicle is in an intersection. We use the previous because as
       // soon it enters in the current destination, a new intersection is choosen to be
       // the next.
-      if (_previous_intersection->isInside(_posX, _posY))
+      if (_previous_intersection->isInside(_pos_x, _pos_y))
         _speed = _base_speed * 0.5;
       else
         _speed = _base_speed;
@@ -187,28 +187,28 @@ void Vehicle::drive()
       switch (_direction)
       {
         case Direction::up:
-          _posY -= _speed;
+          _pos_y -= _speed;
           break;
         case Direction::down:
-          _posY += _speed;
+          _pos_y += _speed;
           break;
         case Direction::left:
-          _posX -= _speed;
+          _pos_x -= _speed;
           break;
         case Direction::right:
-          _posX += _speed;
+          _pos_x += _speed;
           break;
       }
 
       // Loop position in the image.
-      if (_posX < 0)
-        _posX =  999;
-      if (_posX > 999)
-        _posX =  0;
-      if (_posY < 0)
-        _posY =  999;
-      if (_posY > 999)
-        _posY =  0;
+      if (_pos_x < 0)
+        _pos_x =  999;
+      if (_pos_x > 999)
+        _pos_x =  0;
+      if (_pos_y < 0)
+        _pos_y =  999;
+      if (_pos_y > 999)
+        _pos_y =  0;
 
       // Reset stop watch for next cycle.
       last_update = std::chrono::system_clock::now();

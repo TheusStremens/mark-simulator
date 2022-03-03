@@ -16,7 +16,7 @@ Intersection::Intersection()
 void
 Intersection::setBoundingBoxSize(const cv::Size &bb_size)
 {
-  cv::Point top_left = cv::Point(_posX - (bb_size.width / 2.0), _posY - (bb_size.height / 2.0));
+  cv::Point top_left = cv::Point(_pos_x - (bb_size.width / 2.0), _pos_y - (bb_size.height / 2.0));
   _bounding_box = cv::Rect(top_left, bb_size);
 }
 
@@ -44,7 +44,7 @@ std::vector<std::shared_ptr<Street>> Intersection::queryStreets(std::shared_ptr<
 void Intersection::simulate()
 {
   // Launch vehicle queue processing in a thread.
-  threads.emplace_back(std::thread(&Intersection::processVehicleQueue, this));
+  _threads.emplace_back(std::thread(&Intersection::processVehicleQueue, this));
 }
 
 void Intersection::processVehicleQueue()
