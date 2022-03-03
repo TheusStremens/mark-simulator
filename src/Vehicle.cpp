@@ -70,15 +70,16 @@ void Vehicle::pickLane()
 {
   if (!_previous_intersection)
     calculatePreviousIntersection();
+
   double current_x, current_y, next_x, next_y;
   _previous_intersection->getPosition(current_x, current_y);
   _current_destination->getPosition(next_x, next_y);
 
   Direction new_direction;
-  // Loop street inverts the direction.
+
   if (_current_street->getOrientation() == StreetOrientation::horizontal)
   {
-    if (next_x < current_x)
+    if (next_x < current_x) // Loop street inverts the direction.
       new_direction = !_current_street->isLoopStreet() ? Direction::left : Direction::right;
     if (next_x > current_x)
       new_direction = !_current_street->isLoopStreet() ? Direction::right : Direction::left;
@@ -163,9 +164,6 @@ void Vehicle::drive()
 
         // Pick the one intersection at which the vehicle is currently not.
         std::shared_ptr<Intersection> next_intersection = next_street->getIntersectionA()->getID() == _current_destination->getID() ? next_street->getIntersectionB() : next_street->getIntersectionA();
-
-        // send signal to intersection that vehicle has left the intersection
-        // _current_destination->vehicleHasLeft(get_shared_this());
 
         // Update the previous intersection.
         _previous_intersection = _current_destination;

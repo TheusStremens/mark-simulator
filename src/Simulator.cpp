@@ -5,7 +5,6 @@
 #include "Street.hpp"
 #include "Intersection.hpp"
 
-
 void
 addLanesToWideVerticalStreet(std::shared_ptr<Street> &street)
 {
@@ -195,12 +194,12 @@ int main(int argc, char *argv[])
   uint num_vehicles = (argc > 1) ? std::stoi(argv[1]) : 1;
   createTrafficObjects(streets, intersections, vehicles, num_vehicles);
 
-  // simulate intersection
+  // Simulate intersection.
   std::for_each(intersections.begin(), intersections.end(), [](std::shared_ptr<Intersection> &i) {
     i->simulate();
   });
 
-  // simulate vehicles
+  // Simulate vehicles.
   std::for_each(vehicles.begin(), vehicles.end(), [](std::shared_ptr<Vehicle> &v) {
     v->simulate();
   });
