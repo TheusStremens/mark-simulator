@@ -135,7 +135,7 @@ void Vehicle::drive()
       if (_current_street->getOrientation() == StreetOrientation::vertical)
       {
         // If it is not aligned horizontally.
-        if (target_x != _pos_x)
+        if (std::fabs(target_x - _pos_x) > 1.0)
           _direction = (target_x > _pos_x) ? Direction::right : Direction::left;
         else
           _direction = _current_lane->getDirection(); // Just follow the lane direction.
@@ -143,7 +143,7 @@ void Vehicle::drive()
       if (_current_street->getOrientation() == StreetOrientation::horizontal)
       {
         // If it is not aligned vertically.
-        if (target_y != _pos_y)
+        if (std::fabs(target_y - _pos_y) > 1.0)
           _direction = (target_y > _pos_y) ? Direction::down : Direction::up;
         else
           _direction = _current_lane->getDirection(); // Just follow the lane direction.
@@ -179,7 +179,7 @@ void Vehicle::drive()
       // soon it enters in the current destination, a new intersection is choosen to be
       // the next.
       if (_previous_intersection->isInside(_pos_x, _pos_y))
-        _speed = _base_speed * 0.5;
+        _speed = _base_speed * 0.3;
       else
         _speed = _base_speed;
 
