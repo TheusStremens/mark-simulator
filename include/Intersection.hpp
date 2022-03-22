@@ -22,6 +22,31 @@ const cv::Size kHorizontalWideSquare = cv::Size(80, 40);
 const cv::Size kVerticalWideSquare = cv::Size(40, 80);
 
 /**
+ * @brief Auxiliary class to queue and dequeue waiting vehicles in a thread-safe manner
+ *
+ */
+class WaitingVehicles
+{
+public:
+  inline int getSize()
+  {
+    std::lock_guard<std::mutex> lock(_mutex);
+    return _vehicles.size();
+  };
+
+  void pushBack(std::shared_ptr<Vehicle> vehicle, std::promise<void> &&promise);
+  void permitEntryToFirstInQueue();
+
+private:
+  /// List of all vehicles waiting to enter this intersection.
+  std::vector<std::shared_ptr<Vehicle>> _vehicles;
+  /// List of associated promises.
+  std::vector<std::promise<void>> _promises;
+  /// Mutex to avoid data race.
+  std::mutex _mutex;
+};
+
+/**
  * @brief Class that simulates a intersection.
  *
  */
@@ -34,6 +59,15 @@ public:
   // * Inline small methods that are self explanatory * //
   inline void addStreet(std::shared_ptr<Street> street) { _streets.push_back(street); }
   inline cv::Rect getBoundingBox() { return _bounding_box; }
+  inline void setIsBlocked(bool isBlocked) { _is_blocked = isBlocked; };
+  inline void vehicleHasLeft(std::shared_ptr<Vehicle> vehicle) { this->setIsBlocked(false); };
+
+  /**
+   * @brief Add vehicle in the queue of waiting vehicles to have permission to entry.
+   *
+   * @param vehicle
+   */
+  void addVehicleToQueue(std::shared_ptr<Vehicle> vehicle);
 
   /**
    * @brief Return a list of all streets connected to this intersection except the
@@ -75,6 +109,10 @@ public:
 private:
   /// List of all streets connected to this intersection.
   std::vector<std::shared_ptr<Street>> _streets;
+  /// List of all vehicles and their associated promises waiting to enter the intersection.
+  WaitingVehicles _waiting_vehicles;
+  /// Flag indicating wether the intersection is blocked by a vehicle.
+  bool _is_blocked;
   /// Bounding box that defines the intersection area.
   cv::Rect _bounding_box;
 };

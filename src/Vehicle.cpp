@@ -155,6 +155,13 @@ void Vehicle::drive()
           std::fabs(_pos_x - target_x) < 30.0 &&
           std::fabs(_pos_y - target_y) < 30.0)
       {
+        // Request entry to the current intersection (using async).
+        auto future_entry_granted =
+          std::async(&Intersection::addVehicleToQueue, _current_destination, get_shared_this());
+
+        // Wait until entry has been granted.
+        future_entry_granted.get();
+
         // Choose next street and destination.
         std::vector<std::shared_ptr<Street>> street_options = _current_destination->queryStreets(_current_street);
         std::shared_ptr<Street> next_street;
@@ -167,6 +174,8 @@ void Vehicle::drive()
 
         // Pick the one intersection at which the vehicle is currently not.
         std::shared_ptr<Intersection> next_intersection = next_street->getIntersectionA()->getID() == _current_destination->getID() ? next_street->getIntersectionB() : next_street->getIntersectionA();
+
+        _current_destination->vehicleHasLeft(get_shared_this());
 
         // Update the previous intersection.
         _previous_intersection = _current_destination;
