@@ -149,8 +149,11 @@ void Vehicle::drive()
           _direction = _current_lane->getDirection(); // Just follow the lane direction.
       }
 
-      // If the vehicle entered in the intersection area.
-      if (_current_destination->isInside(_pos_x, _pos_y))
+      // If the vehicle entered in the intersection area. 30 pixels is the distance from
+      // the center of the intersection to the first square of it.
+      if (_current_destination->isInside(_pos_x, _pos_y) &&
+          std::fabs(_pos_x - target_x) < 30.0 &&
+          std::fabs(_pos_y - target_y) < 30.0)
       {
         // Choose next street and destination.
         std::vector<std::shared_ptr<Street>> street_options = _current_destination->queryStreets(_current_street);
