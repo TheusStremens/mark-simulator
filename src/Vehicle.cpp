@@ -113,6 +113,8 @@ void Vehicle::drive()
   std::cout << "Vehicle #" << _id << "::drive: thread id = " << std::this_thread::get_id() << std::endl;
   lck.unlock();
 
+  bool has_entered_intersection = false;
+
   // Initialize the stop watch.
   std::chrono::time_point<std::chrono::system_clock> last_update;
   last_update = std::chrono::system_clock::now();
@@ -155,12 +157,16 @@ void Vehicle::drive()
           std::fabs(_pos_x - target_x) < 30.0 &&
           std::fabs(_pos_y - target_y) < 30.0)
       {
-        // Request entry to the current intersection (using async).
-        auto future_entry_granted =
-          std::async(&Intersection::addVehicleToQueue, _current_destination, get_shared_this());
+        if (!has_entered_intersection)
+        {
+          // Request entry to the current intersection (using async).
+          auto future_entry_granted =
+            std::async(&Intersection::addVehicleToQueue, _current_destination, get_shared_this());
 
-        // Wait until entry has been granted.
-        future_entry_granted.get();
+          // Wait until entry has been granted.
+          future_entry_granted.get();
+          has_entered_intersection = true;
+        }
 
         // Choose next street and destination.
         std::vector<std::shared_ptr<Street>> street_options = _current_destination->queryStreets(_current_street);
@@ -175,8 +181,6 @@ void Vehicle::drive()
         // Pick the one intersection at which the vehicle is currently not.
         std::shared_ptr<Intersection> next_intersection = next_street->getIntersectionA()->getID() == _current_destination->getID() ? next_street->getIntersectionB() : next_street->getIntersectionA();
 
-        _current_destination->vehicleHasLeft(get_shared_this());
-
         // Update the previous intersection.
         _previous_intersection = _current_destination;
 
@@ -185,6 +189,14 @@ void Vehicle::drive()
         this->setCurrentStreet(next_street);
         // We can choose the next lane.
         pickLane();
+      }
+
+      // When the vehicle left the intersection that it was, it should inform the
+      // intersection that the vehicle has left to grant access to other vehicles.
+      if (!_previous_intersection->isInside(_pos_x, _pos_y) && has_entered_intersection)
+      {
+        has_entered_intersection = false;
+        _previous_intersection->vehicleHasLeft(get_shared_this());
       }
 
       // Slow down if the vehicle is in an intersection. We use the previous because as
