@@ -56,6 +56,14 @@ Intersection::isInside(const int &pos_x, const int &pos_y)
   return x_check && y_check;
 }
 
+bool
+Intersection::isCompletelyInside(const int &pos_x, const int &pos_y)
+{
+  bool x_check = (_bounding_box.x + 5.0 < pos_x && pos_x < _bounding_box.x + _bounding_box.width -5.0);
+  bool y_check = (_bounding_box.y + 5.0 < pos_y && pos_y < _bounding_box.y +_bounding_box.height -5.0);
+  return x_check && y_check;
+}
+
 std::vector<std::shared_ptr<Street>> Intersection::queryStreets(std::shared_ptr<Street> incoming)
 {
   // Store all outgoing streets in a vector ...

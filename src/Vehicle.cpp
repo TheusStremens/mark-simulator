@@ -153,9 +153,7 @@ void Vehicle::drive()
 
       // If the vehicle entered in the intersection area. 30 pixels is the distance from
       // the center of the intersection to the first square of it.
-      if (_current_destination->isInside(_pos_x, _pos_y) &&
-          std::fabs(_pos_x - target_x) < 30.0 &&
-          std::fabs(_pos_y - target_y) < 30.0)
+      if (_current_destination->isCompletelyInside(_pos_x, _pos_y))
       {
         if (!has_entered_intersection)
         {
