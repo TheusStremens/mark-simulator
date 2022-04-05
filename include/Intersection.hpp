@@ -60,7 +60,7 @@ public:
   inline void addStreet(std::shared_ptr<Street> street) { _streets.push_back(street); }
   inline cv::Rect getBoundingBox() { return _bounding_box; }
   inline void setIsBlocked(bool isBlocked) { _is_blocked = isBlocked; };
-  inline void vehicleHasLeft(std::shared_ptr<Vehicle> vehicle) { this->setIsBlocked(false); };
+  inline void vehicleHasLeft() { this->setIsBlocked(false); };
 
   /**
    * @brief Add vehicle in the queue of waiting vehicles to have permission to entry.
@@ -113,6 +113,17 @@ public:
    * @return false
    */
   bool isCompletelyInside(const int &pos_x, const int &pos_y);
+
+  /**
+   * @brief Check if the point (pos_x, pos_y) is near the bounding box counting the
+   * vehicle size.
+   *
+   * @param pos_x
+   * @param pos_y
+   * @return true
+   * @return false
+   */
+  bool isNear(const int &pos_x, const int &pos_y);
 
   /**
    * @brief Check the queue and block if it has a vehicle waiting. Grant access to that

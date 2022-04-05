@@ -8,7 +8,11 @@ Vehicle::Vehicle()
 {
   _current_street = nullptr;
   _type = ObjectType::objectVehicle;
-  _speed = 0.25;
+  // Random speed for each car.
+  std::random_device rd;
+  std::mt19937 eng(rd());
+  std::uniform_int_distribution<> distr(10, 35);
+  _speed = (double)(distr(eng)) / 100.0;
   _base_speed = _speed;
 }
 
@@ -153,7 +157,7 @@ void Vehicle::drive()
 
       // If the vehicle entered in the intersection area. 30 pixels is the distance from
       // the center of the intersection to the first square of it.
-      if (_current_destination->isCompletelyInside(_pos_x, _pos_y))
+      if (_current_destination->isNear(_pos_x, _pos_y))
       {
         if (!has_entered_intersection)
         {
@@ -191,10 +195,10 @@ void Vehicle::drive()
 
       // When the vehicle left the intersection that it was, it should inform the
       // intersection that the vehicle has left to grant access to other vehicles.
-      if (!_previous_intersection->isInside(_pos_x, _pos_y) && has_entered_intersection)
+      if (!_previous_intersection->isNear(_pos_x, _pos_y) && has_entered_intersection)
       {
         has_entered_intersection = false;
-        _previous_intersection->vehicleHasLeft(get_shared_this());
+        _previous_intersection->vehicleHasLeft();
       }
 
       // Slow down if the vehicle is in an intersection. We use the previous because as

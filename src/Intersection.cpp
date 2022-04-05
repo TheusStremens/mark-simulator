@@ -64,6 +64,14 @@ Intersection::isCompletelyInside(const int &pos_x, const int &pos_y)
   return x_check && y_check;
 }
 
+bool
+Intersection::isNear(const int &pos_x, const int &pos_y)
+{
+  // Conver the vehicle with (pos_x pos_y) in a cv::Rect to check intersection.
+  cv::Rect vehicle_bb = cv::Rect(pos_x - 10, pos_y - 10, 20, 20);
+  return ((vehicle_bb & _bounding_box).area() > 0);
+}
+
 std::vector<std::shared_ptr<Street>> Intersection::queryStreets(std::shared_ptr<Street> incoming)
 {
   // Store all outgoing streets in a vector ...
